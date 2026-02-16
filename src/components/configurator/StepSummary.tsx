@@ -1,6 +1,7 @@
 import {
   ConfigState,
   addons,
+  forkliftColors,
   calculateUnitPrice,
   calculateMonthlyRecurring,
   getFleetDiscount,
@@ -67,6 +68,10 @@ export function StepSummary({ config, onEdit }: StepSummaryProps) {
             <div>
               <span className="text-muted-foreground">Display</span>
               <p className="font-medium">{config.displayPackage}</p>
+            </div>
+            <div>
+              <span className="text-muted-foreground">Color</span>
+              <p className="font-medium">{forkliftColors.find(c => c.value === config.color)?.label}</p>
             </div>
             <div>
               <span className="text-muted-foreground">Environment</span>
