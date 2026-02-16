@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   ConfigState,
   capacityOptions,
@@ -9,11 +10,11 @@ import {
   PowerType,
   TireType,
   DisplayPackage,
+  ForkliftColor,
 } from "@/data/forkliftData";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
 import { AlertCircle } from "lucide-react";
-import forkliftImage from "@/assets/forklift-base.png";
+import { ForkliftPreview } from "./ForkliftPreview";
 
 interface StepSpecificationsProps {
   config: ConfigState;
@@ -29,7 +30,15 @@ export function StepSpecifications({ config, onChange }: StepSpecificationsProps
   const isElectricDisabled = config.capacity > 6000;
   const isDieselDisabled = config.environment === "Indoor";
 
-  const unitPrice = calculateUnitPrice(config);
+  // Listen for color changes from the preview component
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const color = (e as CustomEvent).detail as ForkliftColor;
+      onChange({ color });
+    };
+    window.addEventListener("forklift-color-change", handler);
+    return () => window.removeEventListener("forklift-color-change", handler);
+  }, [onChange]);
 
   const handleCapacityChange = (capacity: number) => {
     const updates: Partial<ConfigState> = { capacity };
@@ -56,24 +65,24 @@ export function StepSpecifications({ config, onChange }: StepSpecificationsProps
   };
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="mb-8">
+    <div className="max-w-[1400px] mx-auto">
+      <div className="mb-6">
         <h2 className="text-2xl font-semibold text-foreground">Configure Specifications</h2>
         <p className="text-muted-foreground mt-1">Customize {model.name} to match your operational needs.</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left panel – controls */}
-        <div className="lg:col-span-3 space-y-6">
+        <div className="space-y-5 order-2 lg:order-1">
           {/* Environment */}
-          <fieldset className="rounded-lg border border-border p-5 bg-card">
-            <Label className="text-sm font-semibold text-foreground mb-3 block">Operating Environment</Label>
+          <fieldset className="rounded-lg border border-border p-4 bg-card">
+            <Label className="text-sm font-semibold text-foreground mb-2.5 block">Operating Environment</Label>
             <div className="flex gap-3">
               {(["Indoor", "Outdoor"] as const).map((env) => (
                 <button
                   key={env}
                   onClick={() => handleEnvironmentChange(env)}
-                  className={`flex-1 py-2.5 px-4 rounded-md border text-sm font-medium transition-colors
+                  className={`flex-1 py-2.5 px-4 rounded-md border text-sm font-medium transition-all duration-200
                     ${config.environment === env
                       ? "border-primary bg-primary/5 text-primary"
                       : "border-border text-muted-foreground hover:border-primary/40"
@@ -86,16 +95,14 @@ export function StepSpecifications({ config, onChange }: StepSpecificationsProps
           </fieldset>
 
           {/* Lift Capacity */}
-          <fieldset className="rounded-lg border border-border p-5 bg-card">
-            <Label className="text-sm font-semibold text-foreground mb-3 block">
-              Lift Capacity
-            </Label>
+          <fieldset className="rounded-lg border border-border p-4 bg-card">
+            <Label className="text-sm font-semibold text-foreground mb-2.5 block">Lift Capacity</Label>
             <div className="flex flex-wrap gap-2">
               {availableCapacities.map((cap) => (
                 <button
                   key={cap}
                   onClick={() => handleCapacityChange(cap)}
-                  className={`py-2 px-4 rounded-md border text-sm font-medium transition-colors
+                  className={`py-2 px-4 rounded-md border text-sm font-medium transition-all duration-200
                     ${config.capacity === cap
                       ? "border-primary bg-primary/5 text-primary"
                       : "border-border text-muted-foreground hover:border-primary/40"
@@ -108,8 +115,8 @@ export function StepSpecifications({ config, onChange }: StepSpecificationsProps
           </fieldset>
 
           {/* Power Type */}
-          <fieldset className="rounded-lg border border-border p-5 bg-card">
-            <Label className="text-sm font-semibold text-foreground mb-3 block">Power Type</Label>
+          <fieldset className="rounded-lg border border-border p-4 bg-card">
+            <Label className="text-sm font-semibold text-foreground mb-2.5 block">Power Type</Label>
             <div className="flex flex-wrap gap-2">
               {powerTypes.map((pt) => {
                 const disabled =
@@ -120,7 +127,7 @@ export function StepSpecifications({ config, onChange }: StepSpecificationsProps
                     key={pt.value}
                     onClick={() => !disabled && onChange({ powerType: pt.value })}
                     disabled={disabled}
-                    className={`py-2 px-4 rounded-md border text-sm font-medium transition-colors
+                    className={`py-2 px-4 rounded-md border text-sm font-medium transition-all duration-200
                       ${disabled ? "opacity-40 cursor-not-allowed border-border text-muted-foreground" : ""}
                       ${!disabled && config.powerType === pt.value
                         ? "border-primary bg-primary/5 text-primary"
@@ -137,7 +144,7 @@ export function StepSpecifications({ config, onChange }: StepSpecificationsProps
             </div>
             {isElectricDisabled && (
               <p className="flex items-center gap-1.5 text-xs text-muted-foreground mt-2">
-                <AlertCircle className="w-3.5 h-3.5" /> Electric unavailable above 6,000 lb capacity
+                <AlertCircle className="w-3.5 h-3.5" /> Electric unavailable above 6,000 lb
               </p>
             )}
             {isDieselDisabled && (
@@ -148,14 +155,14 @@ export function StepSpecifications({ config, onChange }: StepSpecificationsProps
           </fieldset>
 
           {/* Mast Height */}
-          <fieldset className="rounded-lg border border-border p-5 bg-card">
-            <Label className="text-sm font-semibold text-foreground mb-3 block">Mast Height</Label>
+          <fieldset className="rounded-lg border border-border p-4 bg-card">
+            <Label className="text-sm font-semibold text-foreground mb-2.5 block">Mast Height</Label>
             <div className="flex flex-wrap gap-2">
               {mastHeights.map((mh) => (
                 <button
                   key={mh.value}
                   onClick={() => onChange({ mastHeight: mh })}
-                  className={`py-2 px-4 rounded-md border text-sm font-medium transition-colors
+                  className={`py-2 px-4 rounded-md border text-sm font-medium transition-all duration-200
                     ${config.mastHeight.value === mh.value
                       ? "border-primary bg-primary/5 text-primary"
                       : "border-border text-muted-foreground hover:border-primary/40"
@@ -169,14 +176,14 @@ export function StepSpecifications({ config, onChange }: StepSpecificationsProps
           </fieldset>
 
           {/* Tire Type */}
-          <fieldset className="rounded-lg border border-border p-5 bg-card">
-            <Label className="text-sm font-semibold text-foreground mb-3 block">Tire Type</Label>
+          <fieldset className="rounded-lg border border-border p-4 bg-card">
+            <Label className="text-sm font-semibold text-foreground mb-2.5 block">Tire Type</Label>
             <div className="flex flex-wrap gap-2">
               {tireTypes.map((tt) => (
                 <button
                   key={tt.value}
                   onClick={() => onChange({ tireType: tt.value })}
-                  className={`py-2 px-4 rounded-md border text-sm font-medium transition-colors
+                  className={`py-2 px-4 rounded-md border text-sm font-medium transition-all duration-200
                     ${config.tireType === tt.value
                       ? "border-primary bg-primary/5 text-primary"
                       : "border-border text-muted-foreground hover:border-primary/40"
@@ -190,14 +197,14 @@ export function StepSpecifications({ config, onChange }: StepSpecificationsProps
           </fieldset>
 
           {/* Display Package */}
-          <fieldset className="rounded-lg border border-border p-5 bg-card">
-            <Label className="text-sm font-semibold text-foreground mb-3 block">Operator Display Package</Label>
+          <fieldset className="rounded-lg border border-border p-4 bg-card">
+            <Label className="text-sm font-semibold text-foreground mb-2.5 block">Operator Display Package</Label>
             <div className="space-y-2">
               {displayPackages.map((dp) => (
                 <button
                   key={dp.value}
                   onClick={() => handleDisplayChange(dp.value)}
-                  className={`w-full text-left py-3 px-4 rounded-md border transition-colors
+                  className={`w-full text-left py-3 px-4 rounded-md border transition-all duration-200
                     ${config.displayPackage === dp.value
                       ? "border-primary bg-primary/5"
                       : "border-border hover:border-primary/40"
@@ -218,52 +225,10 @@ export function StepSpecifications({ config, onChange }: StepSpecificationsProps
           </fieldset>
         </div>
 
-        {/* Right panel – visual + price */}
-        <div className="lg:col-span-2">
-          <div className="sticky top-8 space-y-6">
-            <div className="rounded-lg border border-border bg-card p-6">
-              <img src={forkliftImage} alt={model.name} className="w-full h-auto mb-4" />
-              <div className="text-center">
-                <p className="text-xs text-muted-foreground uppercase tracking-wider">{model.series}</p>
-                <h3 className="text-lg font-bold text-foreground">{model.name}</h3>
-              </div>
-            </div>
-
-            <div className="rounded-lg border border-border bg-card p-5 space-y-3">
-              <h4 className="text-sm font-semibold text-foreground">Configuration Summary</h4>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Capacity</span>
-                  <span className="font-medium">{config.capacity.toLocaleString()} lb</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Power</span>
-                  <span className="font-medium">{config.powerType}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Mast</span>
-                  <span className="font-medium">{config.mastHeight.label}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Tires</span>
-                  <span className="font-medium">{config.tireType}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Display</span>
-                  <span className="font-medium">{config.displayPackage}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Environment</span>
-                  <Badge variant="secondary" className="text-xs">{config.environment}</Badge>
-                </div>
-              </div>
-              <div className="pt-3 border-t border-border">
-                <div className="flex justify-between items-baseline">
-                  <span className="text-sm text-muted-foreground">Unit Price</span>
-                  <span className="text-2xl font-bold text-foreground">${unitPrice.toLocaleString()}</span>
-                </div>
-              </div>
-            </div>
+        {/* Right panel – live preview */}
+        <div className="order-1 lg:order-2">
+          <div className="lg:sticky lg:top-4">
+            <ForkliftPreview config={config} />
           </div>
         </div>
       </div>

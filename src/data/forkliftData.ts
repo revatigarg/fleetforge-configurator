@@ -129,6 +129,15 @@ export function getFleetDiscount(qty: number) {
   return fleetDiscounts.find((d) => qty >= d.min && qty <= d.max) || fleetDiscounts[0];
 }
 
+export type ForkliftColor = "yellow" | "white" | "orange" | "blue" | "green";
+export const forkliftColors: { label: string; value: ForkliftColor; css: string; swatch: string }[] = [
+  { label: "Industrial Yellow", value: "yellow", css: "none", swatch: "#D4A017" },
+  { label: "Fleet White", value: "white", css: "saturate(0) brightness(1.45)", swatch: "#E8E8E8" },
+  { label: "Safety Orange", value: "orange", css: "hue-rotate(-18deg) saturate(1.3)", swatch: "#D4782F" },
+  { label: "Corporate Blue", value: "blue", css: "hue-rotate(180deg) saturate(0.75) brightness(0.95)", swatch: "#3B6FA0" },
+  { label: "Forest Green", value: "green", css: "hue-rotate(75deg) saturate(0.85) brightness(0.92)", swatch: "#4A7A3D" },
+];
+
 export interface ConfigState {
   step: number;
   selectedModel: ForkliftModel | null;
@@ -140,6 +149,7 @@ export interface ConfigState {
   environment: "Indoor" | "Outdoor";
   selectedAddons: string[];
   quantity: number;
+  color: ForkliftColor;
 }
 
 export const initialConfig: ConfigState = {
@@ -153,6 +163,7 @@ export const initialConfig: ConfigState = {
   environment: "Indoor",
   selectedAddons: [],
   quantity: 1,
+  color: "yellow",
 };
 
 export function calculateUnitPrice(config: ConfigState): number {
