@@ -1,73 +1,181 @@
-# Welcome to your Lovable project
+# FleetForge – Guided Forklift Configurator
 
-## Project info
+## Live Interactive Prototype
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+Explore the live prototype: https://fleetforge-configurator.lovable.app
 
-## How can I edit this code?
 
-There are several ways of editing your application.
+---
 
-**Use Lovable**
+## Overview
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+FleetForge is a guided forklift configuration experience designed to bring CPQ-style customization directly into eCommerce.
 
-Changes made via Lovable will be committed automatically to this repo.
+Today, many industrial equipment companies only sell pre-configured SKUs online. Custom builds require off-platform CPQ workflows, introducing manual quoting, longer sales cycles, and limited transparency into pricing and add-ons.
 
-**Use your preferred IDE**
+This prototype explores how constraint-based configuration, dynamic pricing, and real-time visual updates can reduce friction while preserving enterprise complexity.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
 
-Follow these steps:
+## Problem Statement
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+Industrial equipment purchasing often follows this pattern:
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+- Only fixed configurations are available online  
+- Customizations require sales or CPQ workflows  
+- Add-ons such as telematics are inconsistently adopted  
+- Buyers lack pricing visibility during configuration  
 
-# Step 3: Install the necessary dependencies.
-npm i
+The result:
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+- Increased sales cycle time  
+- Heavy dependency on manual quoting  
+- Lower add-on attach rates  
+- Reduced self-service capability  
 
-**Edit a file directly in GitHub**
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+---
 
-**Use GitHub Codespaces**
+## Proposed Solution
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+A guided configuration engine embedded within eCommerce that:
 
-## What technologies are used for this project?
+- Enforces real-world configuration constraints  
+- Updates pricing dynamically in real-time  
+- Separates one-time and subscription costs  
+- Visualizes configuration changes live  
+- Applies fleet-based discount logic  
+- Bridges self-service checkout and quote workflows  
 
-This project is built with:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+---
 
-## How can I deploy this project?
+## Core Features
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+### 1. Real-Time Visual Configuration
 
-## Can I connect a custom domain to my Lovable project?
+The forklift preview updates dynamically as users select:
 
-Yes, you can!
+- Mast height  
+- Tire type  
+- Power source  
+- Display package  
+- Telematics hardware  
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+Layered visual states simulate an automotive-style builder experience in an industrial B2B context.
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+
+---
+
+### 2. Constraint-Based Logic
+
+Example configuration rules:
+
+IF capacity > 6000 lb  
+    Disable Electric power option  
+
+IF Advanced Display selected  
+    Auto-include Telematics hardware  
+
+IF Indoor environment selected  
+    Disable Diesel  
+
+IF Quantity >= 5  
+    Apply Fleet Tier 1 discount  
+
+IF Quantity >= 10  
+    Apply Fleet Tier 2 discount  
+
+This prevents invalid builds while maintaining flexibility and transparency.
+
+
+---
+
+### 3. Dynamic Pricing Engine
+
+The pricing panel updates in real-time and separates:
+
+- Base unit cost  
+- Configuration upgrades  
+- Telematics hardware (one-time)  
+- Telematics subscription (monthly recurring)  
+- Fleet discount tiers  
+
+This models hybrid CAPEX + SaaS pricing within a single purchase flow.
+
+
+---
+
+### 4. Enterprise-Oriented Cart Experience
+
+The final step supports:
+
+- Build summary review  
+- Configuration editing  
+- Duplicate builds  
+- Save as draft  
+- Request formal quote  
+
+This balances eCommerce efficiency with enterprise buying workflows.
+
+
+---
+
+## KPI Hypothesis
+
+| Metric | Current State | Target |
+|--------|--------------|--------|
+| Manual Quote Dependency | 100% custom builds | < 60% |
+| Telematics Attach Rate | ~25% | 45% |
+| Configuration Completion Rate | N/A | 70% |
+| Average Order Value | Baseline | +15–20% |
+| Sales Cycle Time | 3–6 weeks | 2–4 weeks |
+
+
+---
+
+## System Architecture Concept
+
+This prototype assumes integration with:
+
+- Product catalog with option modeling  
+- Pricing engine with tier logic  
+- ERP for availability and delivery estimates  
+- CPQ for complex edge-case escalation  
+- Subscription billing system for telematics  
+
+The configurator does not replace CPQ.  
+It reduces dependency on it.
+
+
+---
+
+## Risks & Considerations
+
+- Oversimplification of complex configurations  
+- Sales team adoption concerns  
+- Pricing transparency implications  
+- Engineering effort for constraint modeling  
+- Subscription bundling complexity  
+
+
+---
+
+## Future Enhancements
+
+- Saved fleet templates  
+- Multi-user approval workflows  
+- ROI calculator for telematics  
+- Financing simulation  
+- Side-by-side build comparison  
+- Backend constraint engine API  
+
+
+---
+
+## Why This Project Matters
+
+FleetForge demonstrates how industrial B2B commerce can evolve from static SKUs and manual quoting toward guided, intelligent self-service configuration while preserving enterprise control.
+
+This project focuses on system thinking, pricing logic, constraint modeling, and enterprise UX design rather than visual experimentation alone.
